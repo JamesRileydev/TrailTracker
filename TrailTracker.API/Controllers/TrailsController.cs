@@ -19,10 +19,14 @@ namespace TrailTracker.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Trail>> GetAllTrails()
+        public ActionResult<List<Trail>> GetTrails()
         {
-            var context = HttpContext.RequestServices.GetService(typeof(TrailsContext)) as TrailsContext;
-            return context.GetAllTrails();
+            var trails = _trailService.GetTrails();
+
+            return trails;
+
+            //var context = HttpContext.RequestServices.GetService(typeof(TrailsContext)) as TrailsContext;
+            //return context.GetAllTrails();
         }
 
         //[HttpGet]
