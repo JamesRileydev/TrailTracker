@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using TrailTracker.API.Models;
+using TrailTracker.API.Services;
 
 namespace TrailTracker.API
 {
@@ -26,7 +27,12 @@ namespace TrailTracker.API
             services.AddSingleton<ITrailTrackerDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<TrailTrackerDatabaseSettings>>().Value);
 
+            services.AddSingleton<TrailService>();
+
             services.AddControllers();
+
+            services.Add(new ServiceDescriptor(typeof(TrailsContext),
+                new TrailsContext(Configuration.GetConnectionString("DefaultConnection"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
