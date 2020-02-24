@@ -29,17 +29,27 @@ namespace TrailTracker.API.Services
             return trails;
         }
 
-        //public List<Trail> Get() => _trails.Find(t => true).ToList();
-
-        public Trail Get(int id) => _trails.Find(t => t.Id == id).FirstOrDefault();
-
-        public Trail Create(Trail trail)
+        public Trail GetTrail(int id)
         {
-            _trails.InsertOne(trail);
+            var trail = TrailsRepo.GetTrail(id);
+
             return trail;
         }
 
-        public void Update(int id, Trail trailIn) => _trails.ReplaceOne(t => t.Id == id, trailIn);
+        public Trail Get(int id) => _trails.Find(t => t.Id == id).FirstOrDefault();
+
+        public Trail CreateTrail(Trail trail)
+        {
+            TrailsRepo.CreateTrail(trail);
+            return trail;
+        }
+
+        public void UpdateTrail(int id, Trail trailIn)
+        {
+            var response = TrailsRepo.UpdateTrail(id, trailIn);
+
+            
+        }// => TrailsRepo.UpdateTrail(t => t.Id == id, trailIn);
 
         public void Remove(Trail trailIn) => _trails.DeleteOne(t => t.Id == trailIn.Id);
 

@@ -14,22 +14,21 @@ namespace TrailTracker.API.Data
 
         Trail GetTrail(int id);
 
-        int Update(int id, Trail trail);
+        int UpdateTrail(int id, Trail trail);
     }
-
 
     public class TrailsRepository : ITrailsRepository
     {
         public string ConnectionString { get; set; }
 
-        public TrailsRepository(string connectionString)
-        {
-            ConnectionString = connectionString;
-        }
-
         private MySqlConnection GetConnection()
         {
             return new MySqlConnection(ConnectionString);
+        }
+
+        public TrailsRepository(string connectionString)
+        {
+            ConnectionString = connectionString;
         }
 
         public Trail CreateTrail(Trail trail)
@@ -42,6 +41,30 @@ namespace TrailTracker.API.Data
             return 0;
         }
 
+        public Trail GetTrail(int id)
+        {
+            var trail = new Trail();
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                var cmd = new MySqlCommand(
+                    $"SELECT * FROM TrailTrackerDb.Trails WHERE id = {id};", conn
+                    );
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    reader.Read();
+
+                    trail.Id = (int)reader["id"];
+                    trail.Name = reader["Name"].ToString();
+                    trail.Location = reader["Location"].ToString();
+                    trail.Rating = (decimal)reader["Rating"];
+                }
+            }
+
+            return trail;
+        }
 
         public List<Trail> GetTrails()
         {
@@ -72,14 +95,31 @@ namespace TrailTracker.API.Data
             return trailList;
         }
 
-        public Trail GetTrail(int id)
+        public int UpdateTrail(int id, Trail trail)
         {
-            return new Trail();
-        }
+            //const string mysql = @"
+            //        UPDATE `TrailTrackerDb`.`Trails`
+            //           SET `name` = @" + nameof(trail.Name) + @", 
+            //               `location` = @" + nameof(trail.Location) + @",
+            //               `rating` = @" + nameof(trail.Rating) + @"
+            //         WHERE `id` = @" + nameof(id) + @"
+            //               ;";
 
-        public int Update(int id, Trail trail)
-        {
-            return 1;
+            string sql = $"UPDATE TrailTrackerDb.Trails SET `name` = \"{trail.Name}\", `location` = \"{trail.Location}\", `rating` = {trail.Rating} WHERE `id` = {id};";
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(
+                    sql, conn
+                );
+
+                var result = cmd.ExecuteNonQuery();
+
+                conn.Close();
+
+                return result;
+            }
         }
     }
 }

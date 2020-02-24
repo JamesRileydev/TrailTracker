@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 using TrailTracker.API.Models;
 using TrailTracker.API.Services;
@@ -25,17 +23,12 @@ namespace TrailTracker.API.Controllers
 
             return trails;
 
-            //var context = HttpContext.RequestServices.GetService(typeof(TrailsContext)) as TrailsContext;
-            //return context.GetAllTrails();
         }
 
-        //[HttpGet]
-        //public ActionResult<List<Trail>> Get() => _trailService.Get();
-
-        [HttpGet("{id:length(24)}", Name = "GetTrail")]
-        public ActionResult<Trail> Get(int id)
+        [HttpGet("{id}", Name = "GetTrail")]
+        public ActionResult<Trail> GetTrail(int id)
         {
-            var trail = _trailService.Get(id);
+            var trail = _trailService.GetTrail(id);
 
             if (trail == null)
             {
@@ -48,22 +41,22 @@ namespace TrailTracker.API.Controllers
         [HttpPost]
         public ActionResult<Trail> Create(Trail trail)
         {
-            _trailService.Create(trail);
+            _trailService.CreateTrail(trail);
 
             return CreatedAtRoute("GetTrail", new { id = trail.Id.ToString() }, trail);
         }
 
-        [HttpPut("{id:length(24)}")]
+        [HttpPut("{id}")]
         public IActionResult Update(int id, Trail trailIn)
         {
-            var trail = _trailService.Get(id);
+            var trail = _trailService.GetTrail(id);
 
             if (trail == null)
             {
                 return NotFound();
             }
 
-            _trailService.Update(id, trailIn);
+            _trailService.UpdateTrail(id, trailIn);
 
             return NoContent();
         }
