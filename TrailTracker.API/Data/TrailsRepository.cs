@@ -1,6 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using TrailTracker.API.Models;
+using Dapper;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TrailTracker.API.Data
 {
@@ -10,11 +14,13 @@ namespace TrailTracker.API.Data
 
         int DeleteTrail(int id);
 
+        List<Trail> GetAllTrails();
+
         List<Trail> GetTrails();
 
         Trail GetTrail(int id);
 
-        int UpdateTrail(int id, Trail trail);
+        Task<int> UpdateTrail(int id, Trail trail);
     }
 
     public class TrailsRepository : ITrailsRepository
@@ -22,6 +28,11 @@ namespace TrailTracker.API.Data
         public string ConnectionString { get; set; }
 
         private MySqlConnection GetConnection()
+        {
+            return new MySqlConnection(ConnectionString);
+        }
+
+        private IDbConnection DbConnection()
         {
             return new MySqlConnection(ConnectionString);
         }
@@ -39,6 +50,16 @@ namespace TrailTracker.API.Data
         public int DeleteTrail(int id)
         {
             return 0;
+        }
+
+        public List<Trail> GetAllTrails()
+        {
+            var sql = @"SELECT * FROM TrailTrackerDb.Trails;";
+
+            using var db = DbConnection();
+
+            var trails = db.Query<Trail>(sql).ToList();
+            return trails;
         }
 
         public Trail GetTrail(int id)
@@ -95,31 +116,21 @@ namespace TrailTracker.API.Data
             return trailList;
         }
 
-        public int UpdateTrail(int id, Trail trail)
+        public async Task<int> UpdateTrail(int id, Trail trail)
         {
-            //const string mysql = @"
-            //        UPDATE `TrailTrackerDb`.`Trails`
-            //           SET `name` = @" + nameof(trail.Name) + @", 
-            //               `location` = @" + nameof(trail.Location) + @",
-            //               `rating` = @" + nameof(trail.Rating) + @"
-            //         WHERE `id` = @" + nameof(id) + @"
-            //               ;";
+            const string sql = @"
+                    UPDATE `TrailTrackerDb`.`Trails`
+                       SET `name` = @" + nameof(trail.Name) + @", 
+                           `location` = @" + nameof(trail.Location) + @",
+                           `rating` = @" + nameof(trail.Rating) + @"
+                     WHERE `id` = @" + nameof(id) + @"
+                           ;";
 
-            string sql = $"UPDATE TrailTrackerDb.Trails SET `name` = \"{trail.Name}\", `location` = \"{trail.Location}\", `rating` = {trail.Rating} WHERE `id` = {id};";
+            using var db = DbConnection();
 
-            using (MySqlConnection conn = GetConnection())
-            {
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(
-                    sql, conn
-                );
-
-                var result = cmd.ExecuteNonQuery();
-
-                conn.Close();
-
-                return result;
-            }
+            var result = await db.ExecuteAsync(sql, trail).ConfigureAwait(false);
+            return result;
         }
     }
 }
+
