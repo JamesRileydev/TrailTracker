@@ -25,8 +25,8 @@ namespace TrailTracker.API.Controllers
 
         }
 
-        [HttpGet("{id}", Name = "GetTrail")]
-        public ActionResult<Trail> GetTrail(int id)
+        [HttpGet("{id}")]
+        public ActionResult<Trail> GetTrail([FromRoute] int id)
         {
             var trail = _trailService.GetTrail(id);
 
@@ -61,17 +61,17 @@ namespace TrailTracker.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var trail = _trailService.Get(id);
+            var trail = _trailService.GetTrail(id);
 
             if (trail == null)
             {
                 return NotFound();
             }
 
-            _trailService.Remove(trail.Id);
+            _trailService.DeleteTrail(trail.Id);
             return NoContent();
         }
     }

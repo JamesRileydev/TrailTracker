@@ -24,14 +24,14 @@ namespace TrailTracker.API.Services
 
         public List<Trail> GetTrails()
         {
-            var trails = TrailsRepo.GetTrails();
+            var trails = TrailsRepo.GetAllTrails().ConfigureAwait(false).GetAwaiter().GetResult();
 
             return trails;
         }
 
         public Trail GetTrail(int id)
         {
-            var trail = TrailsRepo.GetTrail(id);
+            var trail = TrailsRepo.GetTrail(id).ConfigureAwait(false).GetAwaiter().GetResult();
 
             return trail;
         }
@@ -40,7 +40,7 @@ namespace TrailTracker.API.Services
 
         public Trail CreateTrail(Trail trail)
         {
-            TrailsRepo.CreateTrail(trail);
+            var response = TrailsRepo.CreateTrail(trail);
             return trail;
         }
 
@@ -51,6 +51,11 @@ namespace TrailTracker.API.Services
             
         }// => TrailsRepo.UpdateTrail(t => t.Id == id, trailIn);
 
+
+        public void DeleteTrail(int id)
+        {
+            var response = TrailsRepo.DeleteTrail(id);
+        }
         public void Remove(Trail trailIn) => _trails.DeleteOne(t => t.Id == trailIn.Id);
 
         public void Remove(int id) => _trails.DeleteOne(t => t.Id == id);

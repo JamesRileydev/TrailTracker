@@ -10,15 +10,13 @@ namespace TrailTracker.API.Data
 {
     public interface ITrailsRepository
     {
-        Trail CreateTrail(Trail trail);
+        Task<int> CreateTrail(Trail trail);
 
-        int DeleteTrail(int id);
+        Task<int> DeleteTrail(int id);
 
-        List<Trail> GetAllTrails();
+        Task<List<Trail>> GetAllTrails();
 
-        List<Trail> GetTrails();
-
-        Trail GetTrail(int id);
+        Task<Trail> GetTrail(int id);
 
         Task<int> UpdateTrail(int id, Trail trail);
     }
@@ -26,11 +24,6 @@ namespace TrailTracker.API.Data
     public class TrailsRepository : ITrailsRepository
     {
         public string ConnectionString { get; set; }
-
-        private MySqlConnection GetConnection()
-        {
-            return new MySqlConnection(ConnectionString);
-        }
 
         private IDbConnection DbConnection()
         {
@@ -42,78 +35,63 @@ namespace TrailTracker.API.Data
             ConnectionString = connectionString;
         }
 
-        public Trail CreateTrail(Trail trail)
+        public async Task<int> CreateTrail(Trail trail)
         {
-            return new Trail();
+            const string sql = @"
+                     INSERT INTO TrailTrackerDb.Trails (
+                        `name`,
+                        `location`,
+                        `rating`
+                        ) VALUES (
+                        @" + nameof(trail.Name) + @", 
+                        @" + nameof(trail.Location) + @",
+                        @" + nameof(trail.Rating) + @"
+                        )";
+
+            using var conn = DbConnection();
+
+            var result = await conn.ExecuteAsync(sql, trail).ConfigureAwait(false);
+            return result;
         }
 
-        public int DeleteTrail(int id)
+        public async Task<int> DeleteTrail(int id)
         {
-            return 0;
+            const string sql = @"
+                DELETE FROM TrailTrackerDb.Trails
+                      WHERE `id` = @" + nameof(id) + @"
+                    ";
+
+            using var conn = DbConnection();
+
+            var result = await conn.ExecuteAsync(sql, new { id }).ConfigureAwait(false);
+            return result;
         }
 
-        public List<Trail> GetAllTrails()
+        public async Task<List<Trail>> GetAllTrails()
         {
             var sql = @"SELECT * FROM TrailTrackerDb.Trails;";
 
             using var db = DbConnection();
 
-            var trails = db.Query<Trail>(sql).ToList();
-            return trails;
+            var trails = await db.QueryAsync<Trail>(sql).ConfigureAwait(false);
+            return trails.ToList();
         }
 
-        public Trail GetTrail(int id)
+        public async Task<Trail> GetTrail(int id)
         {
-            var trail = new Trail();
+            const string sql = @"
+                        SELECT `id`,
+                               `name`,
+                               `location`,
+                               `rating`
+                          FROM TrailTrackerDb.Trails
+                         WHERE `id` = @" + nameof(id) + @"
+                               ";
 
-            using (MySqlConnection conn = GetConnection())
-            {
-                conn.Open();
-                var cmd = new MySqlCommand(
-                    $"SELECT * FROM TrailTrackerDb.Trails WHERE id = {id};", conn
-                    );
+            using var conn = DbConnection();
 
-                using (var reader = cmd.ExecuteReader())
-                {
-                    reader.Read();
-
-                    trail.Id = (int)reader["id"];
-                    trail.Name = reader["Name"].ToString();
-                    trail.Location = reader["Location"].ToString();
-                    trail.Rating = (decimal)reader["Rating"];
-                }
-            }
-
-            return trail;
-        }
-
-        public List<Trail> GetTrails()
-        {
-            var trailList = new List<Trail>();
-
-            using (MySqlConnection conn = GetConnection())
-            {
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(
-                    "SELECT * FROM TrailTrackerDb.Trails", conn
-                );
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        trailList.Add(new Trail
-                        {
-                            Id = (int)reader["id"],
-                            Name = reader["Name"].ToString(),
-                            Location = reader["Location"].ToString(),
-                            Rating = (decimal)reader["Rating"]
-                        });
-                    }
-                }
-            }
-
-            return trailList;
+            var result = await conn.QueryFirstOrDefaultAsync<Trail>(sql, new { id }).ConfigureAwait(false);
+            return result;
         }
 
         public async Task<int> UpdateTrail(int id, Trail trail)
