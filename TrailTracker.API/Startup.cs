@@ -1,12 +1,12 @@
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using TrailTracker.API.Data;
 using TrailTracker.API.Models;
-using TrailTracker.API.Services;
+using TrailTracker.API.Modules;
 
 namespace TrailTracker.API
 {
@@ -19,6 +19,12 @@ namespace TrailTracker.API
 
         public IConfiguration Configuration { get; }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new TrailRepositoryModule());
+            builder.RegisterModule(new TrailServiceModule());
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -28,19 +34,7 @@ namespace TrailTracker.API
             services.AddSingleton<ITrailTrackerDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<TrailTrackerDatabaseSettings>>().Value);
 
-            services.AddSingleton<TrailService>();
-
-            services.Add(new ServiceDescriptor(typeof(ITrailsRepository),
-                new TrailsRepository(Configuration.GetConnectionString("DefaultConnection"))));
-
-            //services.Add<ITrailsRepository>(_ => new TrailsRepository("DefaultConnection"));
-            //services.AddSingleton<ITrailsRepository>(sp =>
-            //    sp.GetRequiredService<TrailsRepository>());
-
             services.AddControllers();
-
-            services.Add(new ServiceDescriptor(typeof(TrailsContext),
-                new TrailsContext(Configuration.GetConnectionString("DefaultConnection"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

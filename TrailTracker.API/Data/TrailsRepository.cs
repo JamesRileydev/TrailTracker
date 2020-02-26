@@ -5,6 +5,7 @@ using Dapper;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace TrailTracker.API.Data
 {
@@ -30,9 +31,9 @@ namespace TrailTracker.API.Data
             return new MySqlConnection(ConnectionString);
         }
 
-        public TrailsRepository(string connectionString)
+        public TrailsRepository(IConfiguration config)
         {
-            ConnectionString = connectionString;
+            ConnectionString = config.GetSection("ConnectionStrings").GetValue<string>("DefaultConnection");
         }
 
         public async Task<int> CreateTrail(Trail trail)
