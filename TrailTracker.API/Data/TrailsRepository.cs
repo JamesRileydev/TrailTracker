@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using TrailTracker.API.Controllers.Configuration;
 
 namespace TrailTracker.API.Data
 {
@@ -24,16 +26,16 @@ namespace TrailTracker.API.Data
 
     public class TrailsRepository : ITrailsRepository
     {
-        public string ConnectionString { get; set; }
+        private readonly DbConfig Conn;
 
         private IDbConnection DbConnection()
         {
-            return new MySqlConnection(ConnectionString);
+            return new MySqlConnection(Conn.MySqlString);
         }
 
-        public TrailsRepository(IConfiguration config)
+        public TrailsRepository(IOptions<DbConfig> conn)
         {
-            ConnectionString = config.GetSection("ConnectionStrings").GetValue<string>("DefaultConnection");
+            Conn = conn.Value;
         }
 
         public async Task<int> CreateTrail(Trail trail)

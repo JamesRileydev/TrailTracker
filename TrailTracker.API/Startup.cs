@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using TrailTracker.API.Controllers.Configuration;
 using TrailTracker.API.Models;
 using TrailTracker.API.Modules;
 
@@ -33,6 +34,8 @@ namespace TrailTracker.API
 
             services.AddSingleton<ITrailTrackerDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<TrailTrackerDatabaseSettings>>().Value);
+
+            services.Configure<DbConfig>(Configuration.GetSection("ConnectionStrings"));
 
             services.AddControllers();
         }

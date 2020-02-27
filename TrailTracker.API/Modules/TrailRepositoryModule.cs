@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using TrailTracker.API.Controllers.Configuration;
 using TrailTracker.API.Data;
 
 namespace TrailTracker.API.Modules
@@ -9,9 +10,8 @@ namespace TrailTracker.API.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.Register(ctx => new TrailsRepository(
-                ctx.Resolve<IConfiguration>()
+                ctx.Resolve<IOptions<DbConfig>>()
                 )).As<ITrailsRepository>().SingleInstance();
         }
-
     }
 }
