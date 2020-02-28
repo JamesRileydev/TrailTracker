@@ -5,7 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using TrailTracker.API.Controllers.Configuration;
+using Serilog;
+using TrailTracker.API.Configuration;
 using TrailTracker.API.Models;
 using TrailTracker.API.Modules;
 
@@ -24,6 +25,7 @@ namespace TrailTracker.API
         {
             builder.RegisterModule(new TrailRepositoryModule());
             builder.RegisterModule(new TrailServiceModule());
+            builder.RegisterModule(new LoggingModule());
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -47,6 +49,8 @@ namespace TrailTracker.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

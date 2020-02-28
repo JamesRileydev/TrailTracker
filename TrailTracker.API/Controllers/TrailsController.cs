@@ -19,7 +19,7 @@ namespace TrailTracker.API.Controllers
         [HttpGet]
         public ActionResult<List<Trail>> GetTrails()
         {
-            var trails = _trailService.GetTrails();
+            var (trails, error) = _trailService.GetTrails();
 
             return trails;
 
@@ -39,7 +39,7 @@ namespace TrailTracker.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Trail> Create(Trail trail)
+        public ActionResult<Trail> Create([FromBody]Trail trail)
         {
             _trailService.CreateTrail(trail);
 

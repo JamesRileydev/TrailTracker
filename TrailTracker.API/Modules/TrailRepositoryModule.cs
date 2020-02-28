@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Options;
-using TrailTracker.API.Controllers.Configuration;
+using Serilog;
+using TrailTracker.API.Configuration;
 using TrailTracker.API.Data;
 
 namespace TrailTracker.API.Modules

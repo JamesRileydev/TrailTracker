@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using TrailTracker.API.Controllers.Configuration;
+using TrailTracker.API.Configuration;
 
 namespace TrailTracker.API.Data
 {
@@ -76,7 +76,7 @@ namespace TrailTracker.API.Data
 
             using var db = DbConnection();
 
-            var trails = await db.QueryAsync<Trail>(sql).ConfigureAwait(false);
+            var trails = await db.QueryAsync<Trail>(sql, new { }).ConfigureAwait(false);
             return trails.ToList();
         }
 

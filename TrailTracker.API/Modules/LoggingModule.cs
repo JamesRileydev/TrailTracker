@@ -1,15 +1,13 @@
 ﻿using Autofac;
-using TrailTracker.API.Services;
 using Serilog;
-using Microsoft.Extensions.Logging;
 
 namespace TrailTracker.API.Modules
 {
-    public class TrailServiceModule : Module
+    public class LoggingModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<TrailService>()
+            builder.RegisterType<ILogger>()
                 .SingleInstance();
         }
     }
