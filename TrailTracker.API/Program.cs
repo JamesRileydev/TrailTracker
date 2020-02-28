@@ -24,7 +24,7 @@ namespace TrailTracker.API
                     .Enrich.FromLogContext()
                     .WriteTo.Debug()
                     .WriteTo.Console(
-                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}"))
+                        outputTemplate: "[{Timestamp:HH:mm:ss}] {Message:l}{NewLine}{Exception}"))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseConfiguration(new ConfigurationBuilder()
