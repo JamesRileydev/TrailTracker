@@ -1,11 +1,14 @@
-﻿using Serilog;
+﻿using Fody;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TrailTracker.API.Data;
 using TrailTracker.API.Models;
 
 namespace TrailTracker.API.Services
 {
+    [ConfigureAwait(false)]
     public class TrailService
     {
         public ITrailsRepository TrailsRepo;
@@ -18,25 +21,24 @@ namespace TrailTracker.API.Services
             TrailsRepo = trailsRepo;
         }
 
-        public (List<Trail>, ServiceError) GetTrails()
+        public async ValueTask<(List<Trail>, ServiceError)> GetTrails()
         {
-            Log.Information("Attempting to {0}", nameof(GetTrails));
+            Log.Information("Method called: {0}", nameof(GetTrails));
 
             var trails = new List<Trail>();
 
             try
             {
-            trails = TrailsRepo.GetAllTrails().ConfigureAwait(false).GetAwaiter().GetResult();
+                trails = await TrailsRepo.GetAllTrails();
 
             }
             catch (Exception ex)
             {
-                Log.Warning(ex,"An exception has occured while attempting to retrieve all trails");
+                Log.Warning(ex, "An exception has occured while attempting to retrieve all trails");
 
                 return (null, new ServiceError
                 {
                     Message = "An error occured while attempt to retrieve all trails. See logs for details",
-                    Description = "",
                     Exception = ex
                 });
             }
@@ -44,28 +46,66 @@ namespace TrailTracker.API.Services
             return (trails, null);
         }
 
-        public Trail GetTrail(int id)
+        public async ValueTask<(Trail, ServiceError)> GetTrail(int id)
         {
-            var trail = TrailsRepo.GetTrail(id).ConfigureAwait(false).GetAwaiter().GetResult();
+            Log.Information("Method called: {0}", nameof(GetTrail));
 
-            return trail;
+            Trail trail;
+
+            try
+            {
+                trail = await TrailsRepo.GetTrail(id);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("An error occured while attempting to retrieve trail with id: {id}", id);
+
+                return (null, new ServiceError
+                {
+                    Message = $"An error occured while attempting to retrieve trail with id: {id}",
+                    Exception = ex
+                });
+            }
+
+            return (trail, null);
         }
 
-        public Trail CreateTrail(Trail trail)
+        public async ValueTask<(int, ServiceError)> CreateTrail(Trail trail)
         {
-            var response = TrailsRepo.CreateTrail(trail);
-            return trail;
+            Log.Information("Method called: {0}", nameof(CreateTrail));
+
+            int response;
+            try
+            {
+                response = await TrailsRepo.CreateTrail(trail);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("An error occured while attempting to create trail: {name}", trail.Name);
+
+                return (default, new ServiceError
+                {
+                    Message = $"An error occured while attempting to retrieve trail with name: {trail.Name}",
+                    Exception = ex
+                });
+            }
+
+            return (response, null);
         }
 
         public void UpdateTrail(int id, Trail trailIn)
         {
-            var response = TrailsRepo.UpdateTrail(id, trailIn);
-            
+            Log.Information("Method called: {0}", nameof(UpdateTrail));
+
+            TrailsRepo.UpdateTrail(id, trailIn);
         }
 
         public void DeleteTrail(int id)
         {
-            var response = TrailsRepo.DeleteTrail(id);
+            Log.Information("Method called: {0}", nameof(DeleteTrail));
+
+
+            TrailsRepo.DeleteTrail(id);
         }
     }
 }
