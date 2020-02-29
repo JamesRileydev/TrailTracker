@@ -49,11 +49,12 @@ namespace TrailTracker.API.Data
                         @" + nameof(trail.Name) + @", 
                         @" + nameof(trail.Location) + @",
                         @" + nameof(trail.Rating) + @"
-                        )";
+                        );
+                        SELECT LAST_INSERT_ID()" ;
 
             using var conn = DbConnection();
 
-            var result = await conn.ExecuteAsync(sql, trail).ConfigureAwait(false);
+            var result = await conn.ExecuteScalarAsync<int>(sql, trail).ConfigureAwait(false);
             return result;
         }
 
