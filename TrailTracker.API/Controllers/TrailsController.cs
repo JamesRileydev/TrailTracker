@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using TrailTracker.API.Models;
 using TrailTracker.API.Services;
@@ -21,7 +22,12 @@ namespace TrailTracker.API.Controllers
         {
             var (trails, error) = _trailService.GetTrails();
 
-            return trails;
+            if (error != null)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, error.Message);
+            }
+
+            return Ok(trails);
 
         }
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Serilog;
+﻿using Serilog;
 using System;
 using System.Collections.Generic;
 using TrailTracker.API.Data;
@@ -9,38 +8,38 @@ namespace TrailTracker.API.Services
 {
     public class TrailService
     {
-
         public ITrailsRepository TrailsRepo;
-        private ILogger<TrailService> logger;
 
-        public TrailService(ILogger<TrailService> logger, ITrailsRepository trailsRepo)
+        private readonly ILogger Log;
+
+        public TrailService(ILogger logger, ITrailsRepository trailsRepo)
         {
-            this.logger = logger;
+            Log = logger.ForContext<TrailService>(); ;
             TrailsRepo = trailsRepo;
-
         }
 
         public (List<Trail>, ServiceError) GetTrails()
         {
-            logger.LogInformation("Get Trails");
+            Log.Information("Attempting to {0}", nameof(GetTrails));
 
             var trails = new List<Trail>();
 
             try
             {
             trails = TrailsRepo.GetAllTrails().ConfigureAwait(false).GetAwaiter().GetResult();
+
             }
             catch (Exception ex)
             {
+                Log.Warning(ex,"An exception has occured while attempting to retrieve all trails");
+
                 return (null, new ServiceError
                 {
-                    Message = "An error occured while attempt to retrieve all trails",
+                    Message = "An error occured while attempt to retrieve all trails. See logs for details",
                     Description = "",
                     Exception = ex
                 });
-                
             }
-
 
             return (trails, null);
         }
