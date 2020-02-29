@@ -9,15 +9,15 @@ using TrailTracker.API.Models;
 namespace TrailTracker.API.Services
 {
     [ConfigureAwait(false)]
-    public class TrailService
+    public class TrailsService
     {
         public ITrailsRepository TrailsRepo;
 
         private readonly ILogger Log;
 
-        public TrailService(ILogger logger, ITrailsRepository trailsRepo)
+        public TrailsService(ILogger logger, ITrailsRepository trailsRepo)
         {
-            Log = logger.ForContext<TrailService>(); ;
+            Log = logger.ForContext<TrailsService>(); ;
             TrailsRepo = trailsRepo;
         }
 
