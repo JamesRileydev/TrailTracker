@@ -30,7 +30,8 @@ namespace TrailTracker.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
             }
 
-            return CreatedAtRoute("GetTrail", new { id = createdId.ToString() }, trail);
+            var result = Created("GetTrail", new { id = createdId.ToString() });
+            return result;
         }
 
         [HttpGet]
