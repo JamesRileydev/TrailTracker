@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Fody;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TrailTracker.API.Models;
 using TrailTracker.API.Services;
 
@@ -8,6 +10,7 @@ namespace TrailTracker.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ConfigureAwait(false)]
     public class TrailsController : ControllerBase
     {
         private readonly TrailService _trailService;
@@ -17,45 +20,59 @@ namespace TrailTracker.API.Controllers
             _trailService = trailService;
         }
 
-        [HttpGet]
-        public ActionResult<List<Trail>> GetTrails()
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody]Trail trail)
         {
-            var (trails, error) = _trailService.GetTrails();
+            var (createdId, error) = await _trailService.CreateTrail(trail);
 
             if (error != null)
             {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, error.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
+            }
+
+            return CreatedAtRoute("GetTrail", new { id = createdId.ToString() }, trail);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTrails()
+        {
+            var (trails, error) = await _trailService.GetTrails();
+
+            if (error != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
             }
 
             return Ok(trails);
-
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Trail> GetTrail([FromRoute] int id)
+        public async Task<IActionResult> GetTrail([FromRoute] int id)
         {
-            var trail = _trailService.GetTrail(id);
+            var (trail, error) = await _trailService.GetTrail(id);
+
+            if (error != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
+            }
 
             if (trail == null)
             {
                 return NotFound();
             }
 
-            return trail;
-        }
-
-        [HttpPost]
-        public ActionResult<Trail> Create([FromBody]Trail trail)
-        {
-            _trailService.CreateTrail(trail);
-
-            return CreatedAtRoute("GetTrail", new { id = trail.Id.ToString() }, trail);
+            return Ok(trail);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Trail trailIn)
+        public async Task<IActionResult> Update(int id, Trail trailIn)
         {
-            var trail = _trailService.GetTrail(id);
+            var (trail, error) = await _trailService.GetTrail(id);
+
+            if (error != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
+            }
 
             if (trail == null)
             {
@@ -68,16 +85,21 @@ namespace TrailTracker.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var trail = _trailService.GetTrail(id);
+            var (trail, error) = await _trailService.GetTrail(id);
+
+            if (error != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, error.Message);
+            }
 
             if (trail == null)
             {
                 return NotFound();
             }
 
-            _trailService.DeleteTrail(trail.Id);
+            _trailService.DeleteTrail(id);
             return NoContent();
         }
     }
