@@ -11,5 +11,11 @@ namespace TrailTracker.API.Tests
         {
             Assert.True(true);
         }
+
+        [Fact]
+        public void Delete()
+        {
+            Assert.False(false);
+        }
     }
 }
