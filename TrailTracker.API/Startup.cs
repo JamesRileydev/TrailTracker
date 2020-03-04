@@ -22,10 +22,11 @@ namespace TrailTracker.API
         public IConfiguration Configuration { get; }
 
         public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterModule(new TrailRepositoryModule());
-            builder.RegisterModule(new TrailServiceModule());
+        { 
+            builder.RegisterModule(new ConfigurationModule("appsettings.json"));
             builder.RegisterModule(new LoggingModule());
+            builder.RegisterModule(new TrailsRepositoryModule());
+            builder.RegisterModule(new TrailsServiceModule());
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -50,7 +51,7 @@ namespace TrailTracker.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSerilogRequestLogging();
+            //app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 
