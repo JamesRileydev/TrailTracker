@@ -1,13 +1,12 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Dapper;
+using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using TrailTracker.API.Models;
-using Dapper;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using TrailTracker.API.Configuration;
+using TrailTracker.API.Models;
 
 namespace TrailTracker.API.Data
 {
@@ -50,7 +49,7 @@ namespace TrailTracker.API.Data
                         @" + nameof(trail.Location) + @",
                         @" + nameof(trail.Rating) + @"
                         );
-                        SELECT LAST_INSERT_ID()" ;
+                        SELECT LAST_INSERT_ID()";
 
             using var conn = DbConnection();
 

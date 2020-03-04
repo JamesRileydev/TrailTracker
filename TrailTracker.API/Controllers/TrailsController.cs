@@ -1,7 +1,6 @@
 ﻿using Fody;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrailTracker.API.Models;
 using TrailTracker.API.Services;
@@ -13,9 +12,9 @@ namespace TrailTracker.API.Controllers
     [ConfigureAwait(false)]
     public class TrailsController : ControllerBase
     {
-        private readonly TrailService _trailService;
+        private readonly TrailsService _trailService;
 
-        public TrailsController(TrailService trailService)
+        public TrailsController(TrailsService trailService)
         {
             _trailService = trailService;
         }
