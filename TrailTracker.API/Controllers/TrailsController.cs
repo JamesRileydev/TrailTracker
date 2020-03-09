@@ -12,9 +12,9 @@ namespace TrailTracker.API.Controllers
     [ConfigureAwait(false)]
     public class TrailsController : ControllerBase
     {
-        private readonly TrailsService _trailService;
+        private readonly ITrailsService _trailService;
 
-        public TrailsController(TrailsService trailService)
+        public TrailsController(ITrailsService trailService)
         {
             _trailService = trailService;
         }

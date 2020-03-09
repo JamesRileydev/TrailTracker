@@ -8,6 +8,7 @@ namespace TrailTracker.API.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<TrailsService>()
+                .As<ITrailsService>()
                 .SingleInstance();
         }
     }
