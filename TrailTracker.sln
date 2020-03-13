@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrailTracker.API", "TrailTracker.API\TrailTracker.API.csproj", "{18E833A5-CD7E-4AEF-8312-45F2E70003B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailTracker.API.Tests", "TrailTracker.API.Tests\TrailTracker.API.Tests.csproj", "{17D728B1-5563-4D61-A820-F89BBE4A193E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrailTracker.API.Tests", "TrailTracker.API.Tests\TrailTracker.API.Tests.csproj", "{40CC9EF4-7D4C-4F42-8AB3-4BD0BB8A1DB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{18E833A5-CD7E-4AEF-8312-45F2E70003B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18E833A5-CD7E-4AEF-8312-45F2E70003B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18E833A5-CD7E-4AEF-8312-45F2E70003B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17D728B1-5563-4D61-A820-F89BBE4A193E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17D728B1-5563-4D61-A820-F89BBE4A193E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17D728B1-5563-4D61-A820-F89BBE4A193E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17D728B1-5563-4D61-A820-F89BBE4A193E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40CC9EF4-7D4C-4F42-8AB3-4BD0BB8A1DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CC9EF4-7D4C-4F42-8AB3-4BD0BB8A1DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CC9EF4-7D4C-4F42-8AB3-4BD0BB8A1DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CC9EF4-7D4C-4F42-8AB3-4BD0BB8A1DB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

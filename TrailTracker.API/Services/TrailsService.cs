@@ -8,8 +8,22 @@ using TrailTracker.API.Models;
 
 namespace TrailTracker.API.Services
 {
+    public interface ITrailsService
+    {
+        ValueTask<(List<Trail>, ServiceError)> GetTrails();
+
+        ValueTask<(Trail, ServiceError)> GetTrail(int id);
+
+        ValueTask<(int, ServiceError)> CreateTrail(Trail trail);
+
+        void UpdateTrail(int id, Trail trailIn);
+
+        void DeleteTrail(int id);
+    }
+
     [ConfigureAwait(false)]
-    public class TrailsService
+
+    public class TrailsService : ITrailsService
     {
         public ITrailsRepository TrailsRepo;
 

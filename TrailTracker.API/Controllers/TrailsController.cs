@@ -12,15 +12,15 @@ namespace TrailTracker.API.Controllers
     [ConfigureAwait(false)]
     public class TrailsController : ControllerBase
     {
-        private readonly TrailsService _trailService;
+        private readonly ITrailsService _trailService;
 
-        public TrailsController(TrailsService trailService)
+        public TrailsController(ITrailsService trailService)
         {
             _trailService = trailService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Trail trail)
+        public async Task<IActionResult> CreateTrail([FromBody]Trail trail)
         {
             var (createdId, error) = await _trailService.CreateTrail(trail);
 
@@ -65,7 +65,7 @@ namespace TrailTracker.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Trail trailIn)
+        public async Task<IActionResult> UpdateTrail(int id, Trail trailIn)
         {
             var (trail, error) = await _trailService.GetTrail(id);
 
@@ -85,7 +85,7 @@ namespace TrailTracker.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteTrail(int id)
         {
             var (trail, error) = await _trailService.GetTrail(id);
 
