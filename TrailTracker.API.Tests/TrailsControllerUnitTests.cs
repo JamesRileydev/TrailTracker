@@ -23,9 +23,7 @@ namespace TrailTracker.API.Tests
         {
             var autoSub = new AutoSubstitute();
 
-            autoSub.Resolve<TrailsController>();
             var trailSvc = autoSub.Resolve<ITrailsService>();
-
             trailSvc.CreateTrail(Arg.Any<Trail>()).Returns((default, new ServiceError { Message = _error }));
 
             var result = await autoSub.Resolve<TrailsController>().CreateTrail(new Trail());
@@ -41,9 +39,7 @@ namespace TrailTracker.API.Tests
         {
             var autoSub = new AutoSubstitute();
 
-            autoSub.Resolve<TrailsController>();
             var trailSvc = autoSub.Resolve<ITrailsService>();
-
             trailSvc.CreateTrail(Arg.Any<Trail>()).Returns((1, null));
 
             var result = await autoSub.Resolve<TrailsController>().CreateTrail(new Trail());

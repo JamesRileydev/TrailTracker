@@ -62,7 +62,7 @@ namespace TrailTracker.API.Services
 
         public async ValueTask<(Trail, ServiceError)> GetTrail(int id)
         {
-            Log.Information("Method called: {0}", nameof(GetTrail));
+            Log.Information("Attempting to {method} with id {id}", nameof(GetTrail), id);
 
             Trail trail;
 
@@ -106,20 +106,18 @@ namespace TrailTracker.API.Services
 
             return (response, null);
         }
+        public void DeleteTrail(int id)
+        {
+            Log.Information("Method called: {0}", nameof(DeleteTrail));
+
+            TrailsRepo.DeleteTrail(id);
+        }
 
         public void UpdateTrail(int id, Trail trailIn)
         {
             Log.Information("Method called: {0}", nameof(UpdateTrail));
 
             TrailsRepo.UpdateTrail(id, trailIn);
-        }
-
-        public void DeleteTrail(int id)
-        {
-            Log.Information("Method called: {0}", nameof(DeleteTrail));
-
-
-            TrailsRepo.DeleteTrail(id);
         }
     }
 }
