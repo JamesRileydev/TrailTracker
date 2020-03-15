@@ -18,7 +18,7 @@ build_script:
 after_build:
   # For once the build has completed
 artifacts:
- - path: './TrailTracker.API/bin/Debug/netcoreapp3.1/publish
+ - path: ./TrailTracker.API/bin/Debug/netcoreapp3.1/publish
    name: TrailTracker.API
    type: WebDeployPackage
 clone_depth: 1
