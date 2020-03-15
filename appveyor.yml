@@ -11,23 +11,17 @@ before_build:
   # Display .NET Core version
   - cmd: dotnet --version
   # Display minimal restore text
-  - cmd: dotnet restore ./TrailTracker.API/TrailTracker.API.csproj --verbosity m
+  - cmd: dotnet restore ./home/appveyor/projects/trailtracker/TrailTracker.sln --verbosity m
 build_script:
   # output will be in ./src/bin/debug/netcoreapp1.1/publish
-  - cmd: dotnet publish ./TrailTracker.API/TrailTracker.API.csproj
+  - cmd: dotnet publish ./home/appveyor/projects/trailtracker/TrailTracker.sln
 after_build:
   # For once the build has completed
 artifacts:
- - path: ./TrailTracker.API/bin/Debug/netcoreapp3.1/publish
+ - path: /artifacts
    name: TrailTracker.API
    type: WebDeployPackage
 clone_depth: 1
-test_script:
-  # restore packages for our unit tests
-  - cmd: dotnet restore ./TrailTracker.API/TrailTracker.API.Tests.csproj --verbosity m
-  # run the unit tests (requires changing into the test directory)
-  - cmd: cd TrailTracker.API.Tests
-  - cmd: dotnet xunit
 on_finish :
   # any cleanup in here
 deploy: off
